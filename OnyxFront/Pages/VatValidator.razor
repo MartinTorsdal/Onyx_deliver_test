@@ -1,0 +1,51 @@
+﻿<h3>VAT Validator</h3>
+
+@page "/bind"
+@using OnyxFront.Controllers
+
+@inject VatVerifierController vatLocalService
+
+<p>
+<h3>Valid German VAT for test: DE118856456 </h3>
+</p>
+
+
+<p>
+    <h3>Country Code: </h3><input @bind="CountryCode" />
+</p>
+
+
+<p>
+    <h3>VAT Number: </h3><input @bind="VatNumber" />
+</p>
+
+<p>
+    <button class="btn btn-primary" @onclick="ValidateVat">Validate Vat</button>
+</p>
+
+
+
+@if (waiting == true)
+{
+    <p><h3>Loading...</h3></p>
+}
+else
+{
+<h3>Result: @vatValidatorResult</h3>
+}
+
+@code {
+    private string CountryCode { get; set; }
+    private string VatNumber { get; set; }
+    private string vatValidatorResult { get; set; }
+    private bool waiting { get; set; }
+
+    protected async Task ValidateVat()
+    {
+        waiting = true;
+        var vatValidator = await vatLocalService.VatVerify(CountryCode, VatNumber);
+        waiting = false;
+        vatValidatorResult = vatValidator.valid.ToString();
+    }
+
+}
